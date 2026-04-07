@@ -1,0 +1,26 @@
+[
+  {
+    "controller": "Fixed Timer (30s)",
+    "avg_wait_s": 69.56203703703704,
+    "p95_wait_s": 95.54166666666663,
+    "max_wait_s": 98.0,
+    "los": "E",
+    "phase_acc": 0.2617283950617284
+  },
+  {
+    "controller": "LAAN Transformer (Ours)",
+    "avg_wait_s": 45.05833333333333,
+    "p95_wait_s": 89.66666666666666,
+    "max_wait_s": 98.0,
+    "los": "D",
+    "phase_acc": 0.7722222222222223
+  },
+  {
+    "controller": "Optimal Oracle",
+    "avg_wait_s": 34.125,
+    "p95_wait_s": 47.54166666666663,
+    "max_wait_s": 50.0,
+    "los": "C",
+    "phase_acc": 1.0
+  }
+]

@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ITSC_FINAL System Flowchart - 7 Module Pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Manrope', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+  min-height: 100vh;
+  color: #21243a;
+  position: relative;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 500px at 10% -10%, rgba(255,255,255,0.22), transparent 60%),
+    radial-gradient(800px 420px at 100% 10%, rgba(255,255,255,0.14), transparent 60%);
+}
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+.header {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  color: white;
+  padding: 2.2rem 2rem;
+  text-align: center;
+  position: relative;
+}
+.header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.75), rgba(255,255,255,0));
+}
+.header h1 {
+  font-family: 'Sora', 'Manrope', sans-serif;
+  font-size: 2.45rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.4px;
+  text-wrap: balance;
+}
+.header p {
+  font-size: 1rem;
+  opacity: 0.92;
+  font-weight: 500;
+}
+.content {
+  padding: 3rem;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+}
+.flow-section {
+  margin-bottom: 3rem;
+  padding: 1.2rem;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff, #f9fbff);
+  border: 1px solid #ecf0fb;
+  opacity: 0;
+  animation: sectionEnter 0.7s ease forwards;
+}
+.flow-section:nth-of-type(1) { animation-delay: 0.06s; }
+.flow-section:nth-of-type(2) { animation-delay: 0.12s; }
+.flow-section:nth-of-type(3) { animation-delay: 0.18s; }
+.flow-section:nth-of-type(4) { animation-delay: 0.24s; }
+.flow-section:nth-of-type(5) { animation-delay: 0.30s; }
+.flow-section:nth-of-type(6) { animation-delay: 0.36s; }
+.section-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #1e3c72;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.65rem;
+  letter-spacing: 0.2px;
+  border-bottom: 3px solid #667eea;
+}
+.flowchart {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.flow-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: rowEnter 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+.flowchart .flow-row:nth-of-type(1) { animation-delay: 0.06s; }
+.flowchart .flow-row:nth-of-type(2) { animation-delay: 0.12s; }
+.flowchart .flow-row:nth-of-type(3) { animation-delay: 0.18s; }
+.flowchart .flow-row:nth-of-type(4) { animation-delay: 0.24s; }
+.flowchart .flow-row:nth-of-type(5) { animation-delay: 0.30s; }
+.flowchart .flow-row:nth-of-type(6) { animation-delay: 0.36s; }
+.flowchart .flow-row:nth-of-type(7) { animation-delay: 0.42s; }
+.flowchart .flow-row:nth-of-type(8) { animation-delay: 0.48s; }
+.flowchart .flow-row:nth-of-type(9) { animation-delay: 0.54s; }
+.module {
+  flex: 1;
+  color: white;
+  padding: 1.55rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  overflow: hidden;
+  --mx: 50%;
+  --my: 50%;
+}
+.module::before {
+  content: '';
+  position: absolute;
+  top: -35%;
+  left: -10%;
+  width: 45%;
+  height: 170%;
+  background: linear-gradient(90deg, rgba(255,255,255,0.22), rgba(255,255,255,0));
+  transform: rotate(16deg);
+  pointer-events: none;
+}
+.module::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+  background: radial-gradient(220px circle at var(--mx) var(--my), rgba(255,255,255,0.35), rgba(255,255,255,0.12) 28%, rgba(255,255,255,0) 62%);
+}
+.module:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+.module:hover::after {
+  opacity: 1;
+}
+.module.m1 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.module.m2 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+.module.m3 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+.module.m4 { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+.module.m5 { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333; }
+.module.m6 { background: linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%); }
+.module.m7 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.module.input { background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); color: #333; }
+.module.output { background: linear-gradient(135deg, #96fbc4 0%, #f9f586 100%); color: #333; }
+.module-num {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  background: rgba(255,255,255,0.32);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+.module h3 {
+  font-size: 1.08rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.15px;
+}
+.module p {
+  font-size: 0.86rem;
+  opacity: 0.96;
+  line-height: 1.5;
+}
+.module ul {
+  font-size: 0.8rem;
+  margin-top: 0.6rem;
+  padding-left: 1.15rem;
+  opacity: 0.94;
+  line-height: 1.45;
+}
+.module li { margin-bottom: 0.3rem; }
+.arrow-down {
+  text-align: center;
+  font-size: 2rem;
+  color: #667eea;
+  margin: 0.55rem 0;
+  font-weight: 700;
+  opacity: 0;
+  transform: scale(0.9);
+  animation: arrowEnter 0.45s ease forwards;
+}
+.flowchart .arrow-down:nth-of-type(2) { animation-delay: 0.09s; }
+.flowchart .arrow-down:nth-of-type(4) { animation-delay: 0.15s; }
+.flowchart .arrow-down:nth-of-type(6) { animation-delay: 0.21s; }
+.flowchart .arrow-down:nth-of-type(8) { animation-delay: 0.27s; }
+.flowchart .arrow-down:nth-of-type(10) { animation-delay: 0.33s; }
+.flowchart .arrow-down:nth-of-type(12) { animation-delay: 0.39s; }
+.flowchart .arrow-down:nth-of-type(14) { animation-delay: 0.45s; }
+.flowchart .arrow-down:nth-of-type(16) { animation-delay: 0.51s; }
+.dataset-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.dataset {
+  background: #f0f4ff;
+  padding: 1.05rem;
+  border-radius: 10px;
+  border: 2px solid #667eea;
+  box-shadow: 0 5px 14px rgba(35, 76, 148, 0.08);
+}
+.dataset h4 {
+  color: #1e3c72;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+.dataset p {
+  font-size: 0.84rem;
+  color: #444;
+  margin-bottom: 0.3rem;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.metric-box {
+  padding: 1.05rem;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 5px 14px rgba(0,0,0,0.12);
+}
+.metric-1 { background: linear-gradient(135deg, #2d6a2d 0%, #4caf50 100%); }
+.metric-2 { background: linear-gradient(135deg, #1a5276 0%, #3498db 100%); }
+.metric-3 { background: linear-gradient(135deg, #922b21 0%, #e74c3c 100%); }
+.metric-4 { background: linear-gradient(135deg, #6b4c11 0%, #d4a017 100%); }
+.token-box {
+  background: #fff3e0;
+  border: 2px solid #ff9800;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-top: 1rem;
+  box-shadow: 0 6px 16px rgba(181, 100, 0, 0.1);
+}
+.token-box h4 {
+  color: #e65100;
+  margin-bottom: 1rem;
+  font-size: 1.15rem;
+}
+.token-features {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.8rem;
+}
+.token-feat {
+  background: white;
+  padding: 0.9rem;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid #ffb74d;
+  box-shadow: 0 3px 10px rgba(146, 96, 21, 0.08);
+}
+.token-feat strong {
+  display: block;
+  color: #e65100;
+  margin-bottom: 0.3rem;
+  font-size: 0.88rem;
+}
+.token-feat span {
+  font-size: 0.74rem;
+  color: #666;
+}
+
+@keyframes sectionEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rowEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes arrowEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-section,
+  .flow-row,
+  .arrow-down {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .module::after {
+    transition: none;
+    opacity: 0;
+  }
+}
+@media (hover: none) {
+  .module::after {
+    display: none;
+  }
+}
+@media (max-width: 1100px) {
+  .dataset-grid,
+  .metrics,
+  .token-features {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 800px) {
+  body { padding: 1rem; }
+  .content { padding: 1.5rem; }
+  .flow-section { padding: 1rem; }
+  .dataset-grid,
+  .metrics,
+  .token-features {
+    grid-template-columns: 1fr;
+  }
+  .header h1 { font-size: 1.8rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>ITSC_FINAL - System Architecture Flowchart</h1>
+    <p>Lane-Aware Attention Network for Adaptive Traffic Signal Control</p>
+  </div>
+
+  <div class="content">
+    <div class="flow-section">
+      <div class="section-title">Input: Three Data Sources and Labels</div>
+      <div class="dataset-grid">
+        <div class="dataset">
+          <h4>SUMO Simulation</h4>
+          <p><strong>Microscopic traffic simulation</strong></p>
+          <p>TraCI-driven multi-lane intersection states</p>
+          <p style="font-size:0.75rem; margin-top:0.5rem;">Signal phases, queue dynamics, waiting behavior, mixed vehicle composition</p>
+        </div>
+        <div class="dataset">
+          <h4>Synthetic Generator</h4>
+          <p><strong>M/D/1 queue-inspired synthesis</strong></p>
+          <p>Fallback when SUMO is unavailable</p>
+          <p style="font-size:0.75rem; margin-top:0.5rem;">Low, medium, peak demand profiles and two-wheeler distribution shifts</p>
+        </div>
+        <div class="dataset">
+          <h4>Unified Dataset</h4>
+          <p><strong>traffic_dataset.csv (10k+ timesteps)</strong></p>
+          <p>12 lanes x 8 features per timestep</p>
+          <p style="font-size:0.75rem; margin-top:0.5rem;">Labels from pressure-light policy: optimal_phase = argmax queue pressure</p>
+        </div>
+      </div>
+
+      <div class="metrics">
+        <div class="metric-box metric-1">Low Demand<br><span style="font-size:0.8rem;opacity:0.9;">scale 0.3</span></div>
+        <div class="metric-box metric-2">Medium Demand<br><span style="font-size:0.8rem;opacity:0.9;">scale 0.6</span></div>
+        <div class="metric-box metric-3">Peak Demand<br><span style="font-size:0.8rem;opacity:0.9;">scale 0.9</span></div>
+        <div class="metric-box metric-4">Two-Wheeler Shift<br><span style="font-size:0.8rem;opacity:0.9;">50% to 72%</span></div>
+      </div>
+    </div>
+
+    <div class="flow-section">
+      <div class="section-title">Lane Token Construction (Automatic Feature Engineering)</div>
+      <div class="token-box">
+        <h4>Per-Timestep Tokenization: 12 Lanes x 8 Features</h4>
+        <p style="margin-bottom:1rem;font-size:0.9rem;color:#8f5200;font-weight:600;">
+          Raw traffic states are normalized and grouped into lane tokens for Transformer input.
+        </p>
+        <div class="token-features">
+          <div class="token-feat"><strong>vehicle_count</strong><span>Lane occupancy</span></div>
+          <div class="token-feat"><strong>queue_length_m</strong><span>Queue depth in meters</span></div>
+          <div class="token-feat"><strong>avg_wait_s</strong><span>Average waiting time</span></div>
+          <div class="token-feat"><strong>pcu_density</strong><span>PCU-weighted density</span></div>
+          <div class="token-feat"><strong>two_wheeler_ratio</strong><span>Key mixed-traffic cue</span></div>
+          <div class="token-feat"><strong>motion_ratio</strong><span>Moving vs queued vehicles</span></div>
+          <div class="token-feat"><strong>is_stalled</strong><span>Stall indicator</span></div>
+          <div class="token-feat"><strong>phase_active</strong><span>Current signal context</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-section">
+      <div class="section-title">Main Pipeline: 7-Module Processing Flow</div>
+
+      <div class="flowchart">
+        <div class="flow-row">
+          <div class="module input">
+            <h3>Input: Traffic State Snapshot</h3>
+            <p><strong>Input tensor shape: 12 x 8 per timestep</strong></p>
+            <p style="margin-top:0.5rem;font-weight:600;color:#2a5f97;">Single-step lane matrix from simulation or CV pipeline</p>
+            <ul style="margin-top:0.5rem;">
+              <li>Supports offline dataset and live camera-derived tokens</li>
+              <li>Compatible with multi-lane mixed traffic</li>
+              <li>Ready for model inference after normalization</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="arrow-down">↓</div>
+
+        <div class="flow-row">
+          <div class="module m1">
+            <div class="module-num">M1</div>
+            <h3>Data Generation Engine</h3>
+            <p><strong>SUMO + Synthetic Hybrid Source</strong></p>
+            <ul>
+              <li>Builds lane-level state transitions</li>
+              <li>Models three demand regimes</li>
+              <li>Captures two-wheeler heavy dynamics</li>
+              <li>Exports timestep records for training</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="arrow-down">↓</div>
+
+        <div class="flow-row">
+          <div class="module m2">
+            <div class="module-num">M2</div>
+            <h3>Dataset and Loader Pipeline</h3>
+            <p><strong>Normalization + Split + Batch Delivery</strong></p>
+            <ul>
+              <li>Feature scaling via per-feature mean and std</li>
+              <li>Train/validation/test split: 70/15/15</li>
+              <li>Grouping by timestep into lane token matrix</li>
+              <li>PyTorch DataLoaders with batch size 128</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="arrow-down">↓</div>
+
+        <div class="flow-row">
+          <div class="module m3">
+            <div class="module-num">M3</div>
+            <h3>LAAN Transformer Trainer</h3>
+            <p><strong>Lane-Aware Attention Learning</strong></p>
+            <ul>
+              <li>d_model 128, 4 heads, 3 encoder layers</li>
+              <li>Approx. 95k parameters</li>
+              <li>AdamW optimizer with early stopping</li>
+              <li>Predicts one of four traffic phases</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="arrow-down">↓</div>
+
+        <div class="flow-row">
+          <div class="module m4">
+            <div class="module-num">M4</div>
+            <h3>Ablation Validation Module</h3>
+            <p><strong>Feature Contribution Verification</strong></p>
+            <ul>
+              <li>Trains ablated model with two_wheeler_ratio removed</li>
+              <li>Same architecture for fair comparison</li>
+              <li>Generates full vs ablated performance reports</li>
+              <li>Confirms impact of lane-aware two-wheeler cue</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="arrow-down">↓</div>
+
+        <div class="flow-row">
+          <div class="module m5">
+            <div class="module-num">M5</div>
+            <h3>Evaluation Engine</h3>
+            <p><strong>Controller-Level Benchmarking</strong></p>
+            <ul>
+              <li>Compares fixed-timer, LAAN, and oracle policies</li>
+              <li>Simulates wait penalties under wrong phase selection</li>
+              <li>Metrics: average wait, P95 wait, LOS, accuracy</li>
+              <li>Produces evaluation_results.json for dashboard use</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="arrow-down">↓</div>
+
+        <div class="flow-row">
+          <div class="module m6">
+            <div class="module-num">M6</div>
+            <h3>CV Inference Pipeline</h3>
+            <p><strong>Camera to Lane Token Conversion</strong></p>
+            <ul>
+              <li>IPM transform to bird's-eye view</li>
+              <li>Lane detection + MOG2 stall cues</li>
+              <li>YOLOv8 vehicle detection and lane assignment</li>
+              <li>Real-time feature token computation for inference</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="arrow-down">↓</div>
+
+        <div class="flow-row">
+          <div class="module m7">
+            <div class="module-num">M7</div>
+            <h3>Dashboard and Deployment Layer</h3>
+            <p><strong>Streamlit Analytics Interface</strong></p>
+            <ul>
+              <li>Pipeline view and live inference preview</li>
+              <li>Results comparison and LOS summaries</li>
+              <li>Training curves for full and ablation models</li>
+              <li>Scenario-level breakdown and export support</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="arrow-down">↓</div>
+
+        <div class="flow-row">
+          <div class="module output">
+            <h3>Output: Signal Decision Package</h3>
+            <p><strong>Traffic phase recommendation for real-time control</strong></p>
+            <ul>
+              <li>Predicted phase: 0, 1, 2, or 3</li>
+              <li>Confidence scores and probability distribution</li>
+              <li>Wait-time performance versus baseline controller</li>
+              <li>Dashboard-ready metrics and experiment artifacts</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-section">
+      <div class="section-title">Operational Loop: Monitoring and Model Refresh</div>
+      <div class="module m4" style="width:100%;">
+        <div class="module-num">R</div>
+        <h3>Periodic Refresh and Drift Monitoring</h3>
+        <p><strong>Reliability and Adaptation Guardrail</strong></p>
+        <ul>
+          <li>Monitors shifts in queue patterns and phase mismatch frequency</li>
+          <li>Triggers retraining when performance drops under threshold</li>
+          <li>Revalidates two-wheeler feature contribution via ablation reruns</li>
+          <li>Keeps checkpoints synchronized with evaluation reports</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="flow-section">
+      <div class="section-title">Key Innovations</div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+        <div style="background:#e8f4ff; padding:1.5rem; border-radius:10px; border-left:4px solid #2a7cc7;">
+          <h4 style="color:#14446f; margin-bottom:0.5rem;">Lane-Aware Tokenization</h4>
+          <p style="font-size:0.85rem; color:#555;">Each lane contributes a structured 8-feature token, enabling localized reasoning in dense mixed traffic.</p>
+        </div>
+        <div style="background:#eef9f5; padding:1.5rem; border-radius:10px; border-left:4px solid #2a9d8f;">
+          <h4 style="color:#1a6f65; margin-bottom:0.5rem;">Two-Wheeler Ratio Signal</h4>
+          <p style="font-size:0.85rem; color:#555;">A dedicated mixed-traffic feature validated through ablation to improve phase selection behavior.</p>
+        </div>
+        <div style="background:#fff5ea; padding:1.5rem; border-radius:10px; border-left:4px solid #e76f51;">
+          <h4 style="color:#9f3f28; margin-bottom:0.5rem;">CV-to-Control Integration</h4>
+          <p style="font-size:0.85rem; color:#555;">Computer vision outputs are translated into the same lane-token format used for model training.</p>
+        </div>
+        <div style="background:#f7efff; padding:1.5rem; border-radius:10px; border-left:4px solid #6a4c93;">
+          <h4 style="color:#4d2f77; margin-bottom:0.5rem;">Evaluation-First Reliability</h4>
+          <p style="font-size:0.85rem; color:#555;">Three-way controller comparison and scenario-level reporting provide transparent deployment confidence.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-section">
+      <div class="section-title">Technology Stack</div>
+      <div style="background:#f5f7fb; padding:1.5rem; border-radius:10px;">
+        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:1rem; text-align:center;">
+          <div>
+            <strong style="color:#1f5f9b;">PyTorch</strong><br>
+            <span style="font-size:0.75rem; color:#666;">Model Training</span>
+          </div>
+          <div>
+            <strong style="color:#1f5f9b;">SUMO + TraCI</strong><br>
+            <span style="font-size:0.75rem; color:#666;">Traffic Simulation</span>
+          </div>
+          <div>
+            <strong style="color:#1f5f9b;">YOLOv8 + OpenCV</strong><br>
+            <span style="font-size:0.75rem; color:#666;">Vision Pipeline</span>
+          </div>
+          <div>
+            <strong style="color:#1f5f9b;">Streamlit</strong><br>
+            <span style="font-size:0.75rem; color:#666;">Dashboard and Reporting</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  (function () {
+    const modules = document.querySelectorAll('.module');
+
+    modules.forEach(function (card) {
+      card.addEventListener('pointermove', function (event) {
+        const rect = card.getBoundingClientRect();
+        const x = ((event.clientX - rect.left) / rect.width) * 100;
+        const y = ((event.clientY - rect.top) / rect.height) * 100;
+        card.style.setProperty('--mx', x.toFixed(2) + '%');
+        card.style.setProperty('--my', y.toFixed(2) + '%');
+      });
+
+      card.addEventListener('pointerleave', function () {
+        card.style.setProperty('--mx', '50%');
+        card.style.setProperty('--my', '50%');
+      });
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+simulation/routes.rou.xml
+==========================
+SUMO traffic demand definition with MIXED vehicle types.
+
+Vehicle types defined:
+  - car:         PCU=1.0, length=4.5m  (standard sedan)
+  - motorcycle:  PCU=0.5, length=2.2m  ← two-wheeler (NOVEL FEATURE source)
+  - bus:         PCU=3.0, length=12m
+  - truck:       PCU=2.5, length=8m
+
+Traffic flows:
+  - Peak hour: 72% two-wheelers (realistic for Indian urban roads)
+  - Medium:    65% two-wheelers
+  - Low:       50% two-wheelers
+
+The two_wheeler_ratio per lane is extracted by our CV pipeline
+(YOLOv8 classifies vehicle types) and fed as the novel feature
+to the Transformer.
+-->
+<routes>
+
+  <!-- ── Vehicle Type Definitions ──────────────────────────── -->
+  <vType id="car"        length="4.5" accel="2.6" decel="4.5"
+         maxSpeed="13.89" color="0.8,0.2,0.2" vClass="passenger"/>
+
+  <vType id="motorcycle" length="2.2" accel="3.5" decel="5.0"
+         maxSpeed="15.00" color="0.2,0.8,0.2" vClass="motorcycle"
+         width="0.8"/>
+
+  <vType id="bus"        length="12"  accel="1.2" decel="3.5"
+         maxSpeed="11.11" color="0.2,0.4,0.8" vClass="bus"/>
+
+  <vType id="truck"      length="8"   accel="1.5" decel="4.0"
+         maxSpeed="12.00" color="0.6,0.4,0.1" vClass="truck"/>
+
+  <!-- ── Routes (N→S, S→N, E→W, W→E and all turns) ─────────── -->
+  <route id="N_S" edges="N_in S_out"/>
+  <route id="N_E" edges="N_in E_out"/>
+  <route id="N_W" edges="N_in W_out"/>
+  <route id="S_N" edges="S_in N_out"/>
+  <route id="S_E" edges="S_in E_out"/>
+  <route id="S_W" edges="S_in W_out"/>
+  <route id="E_W" edges="E_in W_out"/>
+  <route id="E_N" edges="E_in N_out"/>
+  <route id="E_S" edges="E_in S_out"/>
+  <route id="W_E" edges="W_in E_out"/>
+  <route id="W_N" edges="W_in N_out"/>
+  <route id="W_S" edges="W_in S_out"/>
+
+  <!--
+  ── Traffic Flows ──────────────────────────────────────────────
+  Scale attribute controls density (0.3=low, 0.6=medium, 0.9=peak).
+  The Python generator (data_gen/sumo_data_gen.py) controls this
+  by setting the --scale flag when launching SUMO.
+
+  These flows represent a 1-hour simulation (3600 seconds).
+  vehsPerHour is the BASE rate; actual = vehsPerHour × scale.
+  -->
+
+  <!-- North approach: 65% motorcycles, 25% cars, 10% heavy -->
+  <flow id="N_S_car"  route="N_S" type="car"        begin="0" end="3600" vehsPerHour="300" />
+  <flow id="N_S_moto" route="N_S" type="motorcycle" begin="0" end="3600" vehsPerHour="780" />
+  <flow id="N_S_bus"  route="N_S" type="bus"        begin="0" end="3600" vehsPerHour="60"  />
+  <flow id="N_E_car"  route="N_E" type="car"        begin="0" end="3600" vehsPerHour="100" />
+  <flow id="N_E_moto" route="N_E" type="motorcycle" begin="0" end="3600" vehsPerHour="260" />
+  <flow id="N_W_moto" route="N_W" type="motorcycle" begin="0" end="3600" vehsPerHour="120" />
+
+  <!-- South approach -->
+  <flow id="S_N_car"  route="S_N" type="car"        begin="0" end="3600" vehsPerHour="280" />
+  <flow id="S_N_moto" route="S_N" type="motorcycle" begin="0" end="3600" vehsPerHour="720" />
+  <flow id="S_E_car"  route="S_E" type="car"        begin="0" end="3600" vehsPerHour="90"  />
+  <flow id="S_E_moto" route="S_E" type="motorcycle" begin="0" end="3600" vehsPerHour="230" />
+  <flow id="S_W_moto" route="S_W" type="motorcycle" begin="0" end="3600" vehsPerHour="100" />
+
+  <!-- East approach -->
+  <flow id="E_W_car"  route="E_W" type="car"        begin="0" end="3600" vehsPerHour="260" />
+  <flow id="E_W_moto" route="E_W" type="motorcycle" begin="0" end="3600" vehsPerHour="670" />
+  <flow id="E_W_truck"route="E_W" type="truck"      begin="0" end="3600" vehsPerHour="40"  />
+  <flow id="E_N_moto" route="E_N" type="motorcycle" begin="0" end="3600" vehsPerHour="200" />
+  <flow id="E_S_car"  route="E_S" type="car"        begin="0" end="3600" vehsPerHour="80"  />
+
+  <!-- West approach -->
+  <flow id="W_E_car"  route="W_E" type="car"        begin="0" end="3600" vehsPerHour="240" />
+  <flow id="W_E_moto" route="W_E" type="motorcycle" begin="0" end="3600" vehsPerHour="620" />
+  <flow id="W_N_moto" route="W_N" type="motorcycle" begin="0" end="3600" vehsPerHour="180" />
+  <flow id="W_S_car"  route="W_S" type="car"        begin="0" end="3600" vehsPerHour="75"  />
+
+  <!-- Rush hour spike: extra flow from N and E between t=1800-2700 -->
+  <flow id="rush_N_moto" route="N_S" type="motorcycle" begin="1800" end="2700" vehsPerHour="400"/>
+  <flow id="rush_E_car"  route="E_W" type="car"        begin="1800" end="2700" vehsPerHour="200"/>
+
+</routes>

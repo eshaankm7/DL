@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+simulation/intersection.net.xml
+================================
+SUMO road network: standard 4-way intersection
+3 lanes per approach (straight-right, straight-left, left-turn)
+Generated via SUMO netconvert — can also be built with netedit GUI.
+
+Lane IDs follow convention: approach_direction_laneIndex
+  N = North approach, S = South, E = East, W = West
+  Lane 0 = rightmost, Lane 2 = leftmost
+-->
+<net version="1.16" junctionCornerDetail="5" limitTurnSpeed="5.83">
+
+  <!-- ── Edges (road segments) ─────────────────────────────── -->
+  <!-- Each edge has 3 lanes, speed=13.89 m/s (~50 km/h) -->
+  <edge id="N_in"  from="N_node"   to="center" numLanes="3" speed="13.89"/>
+  <edge id="S_in"  from="S_node"   to="center" numLanes="3" speed="13.89"/>
+  <edge id="E_in"  from="E_node"   to="center" numLanes="3" speed="13.89"/>
+  <edge id="W_in"  from="W_node"   to="center" numLanes="3" speed="13.89"/>
+  <edge id="N_out" from="center"   to="N_node" numLanes="3" speed="13.89"/>
+  <edge id="S_out" from="center"   to="S_node" numLanes="3" speed="13.89"/>
+  <edge id="E_out" from="center"   to="E_node" numLanes="3" speed="13.89"/>
+  <edge id="W_out" from="center"   to="W_node" numLanes="3" speed="13.89"/>
+
+  <!-- ── Junctions ─────────────────────────────────────────── -->
+  <junction id="center" type="traffic_light" x="0"    y="0"    />
+  <junction id="N_node" type="dead_end"      x="0"    y="200"  />
+  <junction id="S_node" type="dead_end"      x="0"    y="-200" />
+  <junction id="E_node" type="dead_end"      x="200"  y="0"    />
+  <junction id="W_node" type="dead_end"      x="-200" y="0"    />
+
+  <!-- ── Traffic Light Logic ───────────────────────────────── -->
+  <!--
+  Phase encoding: G=green, y=yellow, r=red
+  12 lanes total: N0,N1,N2, S0,S1,S2, E0,E1,E2, W0,W1,W2
+  Phase 0: NS_Straight (N+S straight lanes green)
+  Phase 1: NS_Left     (N+S left-turn lanes green)
+  Phase 2: EW_Straight (E+W straight lanes green)
+  Phase 3: EW_Left     (E+W left-turn lanes green)
+  -->
+  <tlLogic id="center" type="actuated" programID="ITSC" offset="0">
+    <!-- Phase 0: NS Straight — 30s default (overridden by our controller) -->
+    <phase duration="30" state="GGrrrrGGrrrr"/>
+    <phase duration="3"  state="yyrrrryyrrrr"/>
+    <!-- Phase 1: NS Left Turn — 15s default -->
+    <phase duration="15" state="rrGrrrrrGrrr"/>
+    <phase duration="3"  state="rryrrrrryrr"/>
+    <!-- Phase 2: EW Straight — 30s default -->
+    <phase duration="30" state="rrrrGGrrrrGG"/>
+    <phase duration="3"  state="rrrryyrrrryy"/>
+    <!-- Phase 3: EW Left Turn — 15s default -->
+    <phase duration="15" state="rrrrrGrrrrrG"/>
+    <phase duration="3"  state="rrrrryrrrrry"/>
+  </tlLogic>
+
+</net>
